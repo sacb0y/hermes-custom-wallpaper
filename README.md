@@ -1,46 +1,50 @@
 # Hermes Custom Wallpaper Glass
 
-A standalone Hermes Desktop plugin that adds a configurable wallpaper layer and a visual settings page.
+A standalone [Hermes Desktop](https://hermes-agent.nousresearch.com/) plugin that adds a full-window wallpaper with readable glass panels and a visual settings page.
 
 ## Features
 
-- Native macOS image picker — no path editing required
-- PNG, JPG/JPEG, WebP, GIF, and BMP support
-- Full-window `cover`, `contain`, or `fill` modes
-- Image opacity and blur controls
-- Chat, sidebar, and message-card tint controls
+- Native macOS image picker — no manual path editing required
+- PNG, JPG/JPEG, WebP, GIF and BMP support
+- Full-window `cover`, `contain` or `fill` layout
+- Position control: center, top, bottom, left or right
+- Wallpaper opacity and blur
+- Chat, sidebar and message-card tint controls
 - Sidebar and message-card blur controls
-- Live preview with plugin-scoped automatic persistence
-- Wallpaper Settings entry in the Hermes sidebar
+- Immediate preview with plugin-scoped persistent settings
+- No background image is bundled or uploaded
 
 ## Install
 
-1. Download `plugin.js` from this repository.
-2. Create the plugin directory:
+1. Create the plugin directory:
 
-   ```text
-   ~/.hermes/desktop-plugins/custom-wallpaper-glass/
+   ```sh
+   mkdir -p "$HOME/.hermes/desktop-plugins/custom-wallpaper-glass"
    ```
 
-3. Put `plugin.js` in that directory.
-4. Open Hermes and run **⌘K → Reload desktop plugins**.
-5. Open **Wallpaper Settings** from the Hermes sidebar.
-6. Click **Choose Image** and select a local image.
+2. Download `plugin.js` from this repository into that directory.
 
-The plugin intentionally does not ship with a wallpaper image. Each user selects their own image from the visual settings page.
+3. In Hermes Desktop, run **⌘K → Reload desktop plugins**.
 
-## Compatibility
+4. Open **壁纸设置 / Wallpaper Settings** in the left navigation.
 
-Requires a Hermes Desktop build with:
+5. Click **选择图片 / Choose image** and select a local image.
 
-- Runtime desktop plugins
-- `ROUTES_AREA` and `SIDEBAR_NAV_AREA`
-- `window.hermesDesktop.selectPaths`
-- `window.hermesDesktop.readFileDataUrl`
+The plugin reads the selected image through Hermes Desktop's native file bridge. The image stays local and is not committed to this repository.
+
+## Development
+
+```sh
+node --check plugin.js
+```
+
+The runtime plugin uses only the Hermes plugin SDK and React runtime shims. It is a plain ESM JavaScript file and does not require a build step.
 
 ## Notes
 
-This plugin uses the Hermes Desktop plugin SDK and is intended for local installation. Settings are stored in the plugin's namespaced storage and are not written into `config.yaml`.
+- The plugin stores settings in its namespaced plugin storage.
+- If an older copy is already installed, replace its `plugin.js` and reload desktop plugins.
+- The plugin is designed for Hermes Desktop, not the CLI or TUI.
 
 ## License
 
