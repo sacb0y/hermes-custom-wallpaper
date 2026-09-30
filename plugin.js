@@ -188,6 +188,18 @@ export default {
         --tab-bg: color-mix(in srgb, var(--ui-bg-sidebar) var(--wallpaper-bots-tint, 78%), transparent);
       }
 
+      /* The roster is an inline pane, not a keep-alive host, so the zone fill is what you see. */
+      :root[${ROOT_ATTR}] [data-tree-group]:has([data-tree-tab='hermes-bots:pane'][aria-selected='true']),
+      :root[${ROOT_ATTR}] [data-slot='sidebar']:has([data-tree-tab='hermes-bots:pane'][aria-selected='true']) {
+        background-color: color-mix(in srgb, var(--ui-bg-sidebar) var(--wallpaper-bots-tint, 78%), transparent) !important;
+        background-image: none !important;
+      }
+
+      :root[${ROOT_ATTR}] [data-slot='bots-roster'] {
+        background-color: transparent !important;
+        background-image: none !important;
+      }
+
       /* Scheduled jobs: the bot routines pane, its tab, and the cron overlay. */
       :root[${ROOT_ATTR}] [data-tree-group]:has([data-pane-host='hermes-bots:routines']:not([inert])),
       :root[${ROOT_ATTR}] [data-tree-group]:has([data-pane-host='hermes-bots:routines']:not([inert])) [data-panel-header],
