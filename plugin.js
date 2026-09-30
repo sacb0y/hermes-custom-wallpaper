@@ -23,7 +23,8 @@ const DEFAULTS = {
   messageBlur: 8,
   botsTint: 78,
   jobsTint: 78,
-  settingsTint: 86
+  settingsTint: 86,
+  sideTint: 78
 }
 
 const clamp = value => Math.max(0, Math.min(100, Number(value) || 0))
@@ -40,6 +41,7 @@ const settingsCss = s => `
   --wallpaper-bots-tint: ${clamp(s.botsTint)}%;
   --wallpaper-jobs-tint: ${clamp(s.jobsTint)}%;
   --wallpaper-settings-tint: ${clamp(s.settingsTint)}%;
+  --wallpaper-side-tint: ${clamp(s.sideTint)}%;
 `
 
 function WallpaperSettingsPage({ ctx, initial, applySettings, loadImage }) {
@@ -84,7 +86,7 @@ function WallpaperSettingsPage({ ctx, initial, applySettings, loadImage }) {
       jsx('label', { children: ['Fit ', jsx('select', { value: settings.fit, onChange: event => update({ fit: event.target.value }), children: [jsx('option', { value: 'cover', children: 'Cover' }), jsx('option', { value: 'contain', children: 'Contain' }), jsx('option', { value: 'fill', children: 'Stretch' })] })] }),
       jsx('label', { children: ['Position ', jsx('select', { value: settings.position, onChange: event => update({ position: event.target.value }), children: [jsx('option', { value: 'center center', children: 'Center' }), jsx('option', { value: 'center top', children: 'Top' }), jsx('option', { value: 'center bottom', children: 'Bottom' }), jsx('option', { value: 'left center', children: 'Left' }), jsx('option', { value: 'right center', children: 'Right' })] })] })
     ] }),
-    jsx('section', { style: { padding: '20px', border: '1px solid var(--ui-stroke-secondary)', borderRadius: '12px', background: 'var(--ui-editor-surface-background)', display: 'grid', gap: '14px' }, children: [jsx('h2', { children: 'Readability' }), slider('Chat tint', 'chatTint'), slider('Sidebar tint', 'sidebarTint'), slider('Bots tint', 'botsTint'), slider('Scheduled jobs tint', 'jobsTint'), slider('Settings window tint', 'settingsTint'), slider('Message tint', 'messageTint'), slider('Sidebar blur', 'sidebarBlur', 30, 'px'), slider('Message blur', 'messageBlur', 30, 'px')] })
+    jsx('section', { style: { padding: '20px', border: '1px solid var(--ui-stroke-secondary)', borderRadius: '12px', background: 'var(--ui-editor-surface-background)', display: 'grid', gap: '14px' }, children: [jsx('h2', { children: 'Readability' }), slider('Chat tint', 'chatTint'), slider('Sidebar tint', 'sidebarTint'), slider('Bots tint', 'botsTint'), slider('Scheduled jobs tint', 'jobsTint'), slider('Files and terminal tint', 'sideTint'), slider('Settings window tint', 'settingsTint'), slider('Message tint', 'messageTint'), slider('Sidebar blur', 'sidebarBlur', 30, 'px'), slider('Message blur', 'messageBlur', 30, 'px')] })
   ] }) })
 }
 
@@ -196,20 +198,48 @@ export default {
         --tab-bg: color-mix(in srgb, var(--ui-bg-chrome) var(--wallpaper-jobs-tint, 78%), transparent);
       }
 
+      :root[${ROOT_ATTR}] [data-pane-host='hermes-bots:pane'] {
+        background-color: color-mix(in srgb, var(--ui-bg-sidebar) var(--wallpaper-bots-tint, 78%), transparent) !important;
+        background-image: none !important;
+      }
+
+      :root[${ROOT_ATTR}] [data-pane-host='hermes-bots:routines'],
+      :root[${ROOT_ATTR}] [data-floating-pane='hermes-bots:routines'] {
+        background-color: color-mix(in srgb, var(--ui-bg-chrome) var(--wallpaper-jobs-tint, 78%), transparent) !important;
+        background-image: none !important;
+      }
+
+      :root[${ROOT_ATTR}] [data-pane-host='files'],
+      :root[${ROOT_ATTR}] [data-pane-host='terminal'] {
+        background-color: color-mix(in srgb, var(--ui-bg-chrome) var(--wallpaper-side-tint, 78%), transparent) !important;
+        background-image: none !important;
+      }
+
       :root[${ROOT_ATTR}] [data-overlay-surface] {
         background-color: transparent !important;
         -webkit-backdrop-filter: none !important;
         backdrop-filter: none !important;
       }
 
+      :root[${ROOT_ATTR}] [data-overlay-surface][data-wallpaper-overlay='settings'] [data-glass-raised],
       :root[${ROOT_ATTR}][data-wallpaper-route='/settings'] [data-overlay-surface] [data-glass-raised] {
+        --ui-chat-surface-background: color-mix(in srgb, var(--ui-bg-chrome) var(--wallpaper-settings-tint, 86%), transparent);
+        --ui-editor-surface-background: color-mix(in srgb, var(--ui-bg-chrome) var(--wallpaper-settings-tint, 86%), transparent);
+        --ui-sidebar-surface-background: color-mix(in srgb, var(--ui-bg-sidebar) var(--wallpaper-settings-tint, 86%), transparent);
+        --ui-bg-primary: color-mix(in srgb, var(--ui-bg-chrome) var(--wallpaper-settings-tint, 86%), transparent);
+        --ui-bg-editor: color-mix(in srgb, var(--ui-bg-chrome) var(--wallpaper-settings-tint, 86%), transparent);
+        --ui-bg-tertiary: color-mix(in srgb, var(--ui-bg-chrome) var(--wallpaper-settings-tint, 86%), transparent);
+        --ui-bg-quaternary: color-mix(in srgb, var(--ui-bg-chrome) var(--wallpaper-settings-tint, 86%), transparent);
+        --ui-bg-elevated: color-mix(in srgb, var(--ui-bg-chrome) var(--wallpaper-settings-tint, 86%), transparent);
         background-color: color-mix(in srgb, var(--ui-bg-chrome) var(--wallpaper-settings-tint, 86%), transparent) !important;
+        background-image: none !important;
       }
 
       :root[${ROOT_ATTR}][data-wallpaper-route='/settings'] [data-overlay-surface] [data-tour='overlay-nav'] {
         background-color: color-mix(in srgb, var(--ui-bg-sidebar) var(--wallpaper-settings-tint, 86%), transparent) !important;
       }
 
+      :root[${ROOT_ATTR}] [data-overlay-surface][data-wallpaper-overlay='jobs'] [data-glass-raised],
       :root[${ROOT_ATTR}][data-wallpaper-route='/cron'] [data-overlay-surface] [data-glass-raised] {
         background-color: color-mix(in srgb, var(--ui-bg-chrome) var(--wallpaper-jobs-tint, 78%), transparent) !important;
       }
@@ -225,10 +255,20 @@ export default {
 
     const syncRoute = () => {
       const path = (location.hash || '').replace(/^#/, '').split('?')[0]
-      if (path === '/settings' || path === '/cron') root.dataset.wallpaperRoute = path
+      if (path === '/settings' || path.startsWith('/settings/')) root.dataset.wallpaperRoute = '/settings'
+      else if (path === '/cron' || path.startsWith('/cron/')) root.dataset.wallpaperRoute = '/cron'
       else delete root.dataset.wallpaperRoute
+      document.querySelectorAll('[data-overlay-surface]').forEach(el => {
+        const label = (el.querySelector('button[aria-label]')?.getAttribute('aria-label') || '').toLowerCase()
+        const blob = (el.innerText || '').slice(0, 500).toLowerCase()
+        if (root.dataset.wallpaperRoute === '/settings' || label.includes('setting')) el.dataset.wallpaperOverlay = 'settings'
+        else if (root.dataset.wallpaperRoute === '/cron' || blob.includes('scheduled job') || blob.includes('new cron')) el.dataset.wallpaperOverlay = 'jobs'
+        else delete el.dataset.wallpaperOverlay
+      })
     }
     window.addEventListener('hashchange', syncRoute)
+    const observer = new MutationObserver(syncRoute)
+    observer.observe(document.body, { childList: true, subtree: true })
     syncRoute()
 
     const wallpaper = document.createElement('img')
@@ -300,6 +340,7 @@ export default {
     ctx.onDispose(() => {
       disposed = true
       window.removeEventListener('hashchange', syncRoute)
+      observer.disconnect()
       delete root.dataset.wallpaperRoute
       style.remove()
       wallpaper.remove()
