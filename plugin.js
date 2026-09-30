@@ -20,7 +20,10 @@ const DEFAULTS = {
   sidebarTint: 78,
   sidebarBlur: 12,
   messageTint: 88,
-  messageBlur: 8
+  messageBlur: 8,
+  botsTint: 78,
+  jobsTint: 78,
+  settingsTint: 86
 }
 
 const clamp = value => Math.max(0, Math.min(100, Number(value) || 0))
@@ -34,6 +37,9 @@ const settingsCss = s => `
   --wallpaper-sidebar-blur: ${Math.max(0, Number(s.sidebarBlur) || 0)}px;
   --wallpaper-message-tint: ${clamp(s.messageTint)}%;
   --wallpaper-message-blur: ${Math.max(0, Number(s.messageBlur) || 0)}px;
+  --wallpaper-bots-tint: ${clamp(s.botsTint)}%;
+  --wallpaper-jobs-tint: ${clamp(s.jobsTint)}%;
+  --wallpaper-settings-tint: ${clamp(s.settingsTint)}%;
 `
 
 function WallpaperSettingsPage({ ctx, initial, applySettings, loadImage }) {
@@ -78,7 +84,7 @@ function WallpaperSettingsPage({ ctx, initial, applySettings, loadImage }) {
       jsx('label', { children: ['Fit ', jsx('select', { value: settings.fit, onChange: event => update({ fit: event.target.value }), children: [jsx('option', { value: 'cover', children: 'Cover' }), jsx('option', { value: 'contain', children: 'Contain' }), jsx('option', { value: 'fill', children: 'Stretch' })] })] }),
       jsx('label', { children: ['Position ', jsx('select', { value: settings.position, onChange: event => update({ position: event.target.value }), children: [jsx('option', { value: 'center center', children: 'Center' }), jsx('option', { value: 'center top', children: 'Top' }), jsx('option', { value: 'center bottom', children: 'Bottom' }), jsx('option', { value: 'left center', children: 'Left' }), jsx('option', { value: 'right center', children: 'Right' })] })] })
     ] }),
-    jsx('section', { style: { padding: '20px', border: '1px solid var(--ui-stroke-secondary)', borderRadius: '12px', background: 'var(--ui-editor-surface-background)', display: 'grid', gap: '14px' }, children: [jsx('h2', { children: 'Readability' }), slider('Chat tint', 'chatTint'), slider('Sidebar tint', 'sidebarTint'), slider('Message tint', 'messageTint'), slider('Sidebar blur', 'sidebarBlur', 30, 'px'), slider('Message blur', 'messageBlur', 30, 'px')] })
+    jsx('section', { style: { padding: '20px', border: '1px solid var(--ui-stroke-secondary)', borderRadius: '12px', background: 'var(--ui-editor-surface-background)', display: 'grid', gap: '14px' }, children: [jsx('h2', { children: 'Readability' }), slider('Chat tint', 'chatTint'), slider('Sidebar tint', 'sidebarTint'), slider('Bots tint', 'botsTint'), slider('Scheduled jobs tint', 'jobsTint'), slider('Settings window tint', 'settingsTint'), slider('Message tint', 'messageTint'), slider('Sidebar blur', 'sidebarBlur', 30, 'px'), slider('Message blur', 'messageBlur', 30, 'px')] })
   ] }) })
 }
 
@@ -169,6 +175,44 @@ export default {
         -webkit-backdrop-filter: blur(var(--wallpaper-message-blur, 8px));
         backdrop-filter: blur(var(--wallpaper-message-blur, 8px));
       }
+
+      /* Bots tab: the sessions zone stays solid until that pane is the visible one. */
+      :root[${ROOT_ATTR}] [data-tree-group]:has([data-pane-host='hermes-bots:pane']:not([inert])),
+      :root[${ROOT_ATTR}] [data-tree-group]:has([data-pane-host='hermes-bots:pane']:not([inert])) [data-panel-header],
+      :root[${ROOT_ATTR}] [data-tree-tab='hermes-bots:pane'],
+      :root[${ROOT_ATTR}] [data-panel-header]:has([data-tree-tab='hermes-bots:pane']),
+      :root[${ROOT_ATTR}] [role='tablist']:has([data-tree-tab='hermes-bots:pane']) {
+        background-color: color-mix(in srgb, var(--ui-bg-sidebar) var(--wallpaper-bots-tint, 78%), transparent) !important;
+        --tab-bg: color-mix(in srgb, var(--ui-bg-sidebar) var(--wallpaper-bots-tint, 78%), transparent);
+      }
+
+      /* Scheduled jobs: the bot routines pane, its tab, and the cron overlay. */
+      :root[${ROOT_ATTR}] [data-tree-group]:has([data-pane-host='hermes-bots:routines']:not([inert])),
+      :root[${ROOT_ATTR}] [data-tree-group]:has([data-pane-host='hermes-bots:routines']:not([inert])) [data-panel-header],
+      :root[${ROOT_ATTR}] [data-tree-tab='hermes-bots:routines'],
+      :root[${ROOT_ATTR}] [data-panel-header]:has([data-tree-tab='hermes-bots:routines']),
+      :root[${ROOT_ATTR}] [role='tablist']:has([data-tree-tab='hermes-bots:routines']) {
+        background-color: color-mix(in srgb, var(--ui-bg-chrome) var(--wallpaper-jobs-tint, 78%), transparent) !important;
+        --tab-bg: color-mix(in srgb, var(--ui-bg-chrome) var(--wallpaper-jobs-tint, 78%), transparent);
+      }
+
+      :root[${ROOT_ATTR}] [data-overlay-surface] {
+        background-color: transparent !important;
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+      }
+
+      :root[${ROOT_ATTR}][data-wallpaper-route='/settings'] [data-overlay-surface] [data-glass-raised] {
+        background-color: color-mix(in srgb, var(--ui-bg-chrome) var(--wallpaper-settings-tint, 86%), transparent) !important;
+      }
+
+      :root[${ROOT_ATTR}][data-wallpaper-route='/settings'] [data-overlay-surface] [data-tour='overlay-nav'] {
+        background-color: color-mix(in srgb, var(--ui-bg-sidebar) var(--wallpaper-settings-tint, 86%), transparent) !important;
+      }
+
+      :root[${ROOT_ATTR}][data-wallpaper-route='/cron'] [data-overlay-surface] [data-glass-raised] {
+        background-color: color-mix(in srgb, var(--ui-bg-chrome) var(--wallpaper-jobs-tint, 78%), transparent) !important;
+      }
     `
     document.head.appendChild(style)
 
@@ -178,6 +222,14 @@ export default {
       root.toggleAttribute(ROOT_ATTR, Boolean(settings.enabled && settings.imagePath))
     }
     applySettings(settings)
+
+    const syncRoute = () => {
+      const path = (location.hash || '').replace(/^#/, '').split('?')[0]
+      if (path === '/settings' || path === '/cron') root.dataset.wallpaperRoute = path
+      else delete root.dataset.wallpaperRoute
+    }
+    window.addEventListener('hashchange', syncRoute)
+    syncRoute()
 
     const wallpaper = document.createElement('img')
     wallpaper.id = WALLPAPER_ID
@@ -247,6 +299,8 @@ export default {
 
     ctx.onDispose(() => {
       disposed = true
+      window.removeEventListener('hashchange', syncRoute)
+      delete root.dataset.wallpaperRoute
       style.remove()
       wallpaper.remove()
       document.getElementById(MARKER_ID)?.remove()

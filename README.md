@@ -11,7 +11,7 @@ This is a fork of [White-zhang-xiao-bai/hermes-custom-wallpaper](https://github.
 - Full-window `cover`, `contain` or `fill` layout
 - Position control: center, top, bottom, left or right
 - Wallpaper opacity and blur
-- Chat, sidebar and message tint controls, mixed from the active theme surfaces
+- Chat, sidebar, Bots, Scheduled jobs, and Settings-window tint controls, mixed from the active theme surfaces
 - Sidebar and message blur controls
 - English settings page
 - Immediate preview with plugin-scoped persistent settings
