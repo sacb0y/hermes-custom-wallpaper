@@ -156,6 +156,15 @@ export default {
         background-image: none !important;
       }
 
+      /* Built-in chat statue (Settings → Chat Backdrop) sits in the transcript. */
+      :root[${ROOT_ATTR}] [data-chat-surface] img[src*='filler-bg'],
+      :root[${ROOT_ATTR}] [data-chat-surface] img[src*='ds-assets'],
+      :root[${ROOT_ATTR}] [data-chat-surface] > div[aria-hidden].mix-blend-difference,
+      :root[${ROOT_ATTR}] [data-chat-surface] > div[aria-hidden]:has(img[src*='filler-bg']),
+      :root[${ROOT_ATTR}] [data-chat-surface] > div[aria-hidden]:has(img[src*='ds-assets']) {
+        display: none !important;
+      }
+
       :root[${ROOT_ATTR}] [data-slot='sidebar'],
       :root[${ROOT_ATTR}] [data-slot='statusbar'] {
         background-color: var(--ui-sidebar-surface-background) !important;
